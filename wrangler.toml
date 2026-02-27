@@ -1,4 +1,4 @@
-name = "segar"
+name = "sujud-nanas"
 main = "src/index.tsx"
 compatibility_date = "2024-04-03"
 
@@ -9,4 +9,4 @@ bucket_name = "nenas"
 [[d1_databases]]
 binding = "DB"
 database_name = "sujud_nanas_db"
-database_id = "40095d2e-5e50-455f-abd8-deb7131f7797"
+database_id = "your-database-id"

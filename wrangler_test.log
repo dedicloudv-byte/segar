@@ -1,0 +1,13 @@
+
+ ⛅️ wrangler 4.69.0
+───────────────────
+Your Worker has access to the following bindings:
+Binding                          Resource         Mode
+env.DB (sujud_nanas_db)          D1 Database      local
+env.BUCKET (nenas)               R2 Bucket        local
+
+⎔ Starting local server...
+[wrangler:info] Ready on http://localhost:8787
+[wrangler:info] GET / 200 OK (144ms)
+⎔ Reloading local server...
+⎔ Local server updated and ready

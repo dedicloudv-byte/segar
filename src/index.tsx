@@ -12,6 +12,25 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+app.onError((err, c) => {
+  console.error(`[Error]: ${err.message}`)
+  return c.html(
+    <Layout title="Error">
+      <div class="py-20 text-center">
+        <h1 class="text-2xl gold-text mb-4">Ups! Terjadi Kesalahan</h1>
+        <p class="text-gray-400 max-w-md mx-auto">
+          Internal Server Error. Mohon pastikan:
+          <br/>1. Database D1 sudah dibuat dan ID-nya benar di <code>wrangler.toml</code>.
+          <br/>2. Tabel sudah diinisialisasi dengan <code>wrangler d1 execute sujud_nanas_db --remote --file=src/db/schema.sql</code>.
+          <br/>3. Bucket R2 bernama <code>nenas</code> sudah dibuat.
+        </p>
+        <a href="/" class="mt-8 inline-block gold-text border gold-border px-6 py-2 rounded">Coba Lagi</a>
+      </div>
+    </Layout>,
+    500
+  )
+})
+
 // Serve images from R2
 app.get('/image/:key', async (c) => {
   const key = c.req.param('key')
