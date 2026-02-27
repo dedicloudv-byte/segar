@@ -24,7 +24,48 @@ export interface SiteData {
 }
 
 const DEFAULT_DATA: SiteData = {
-  products: [],
+  products: [
+    {
+      id: "prod1",
+      name: "Nenas Madu Super Premium",
+      price: 50000,
+      type: "Madu",
+      size: "XL",
+      image_key: "",
+      description: "Nenas madu dengan kemanisan sempurna dan tekstur renyah. Dipanen langsung dari perkebunan terbaik.",
+      created_at: new Date().toISOString()
+    },
+    {
+      id: "prod2",
+      name: "Nenas MD2 Gold Luxury",
+      price: 75000,
+      type: "MD2",
+      size: "L",
+      image_key: "",
+      description: "Varietas MD2 yang terkenal dengan warna kuning keemasan dan rasa manis asam yang seimbang.",
+      created_at: new Date().toISOString()
+    },
+    {
+      id: "prod3",
+      name: "Nenas Pasir Kristal",
+      price: 35000,
+      type: "Pasir",
+      size: "M",
+      image_key: "",
+      description: "Nenas pasir dengan tekstur daging yang padat dan aroma yang sangat harum.",
+      created_at: new Date().toISOString()
+    },
+    {
+      id: "prod4",
+      name: "Nenas Queen Royal",
+      price: 45000,
+      type: "Queen",
+      size: "L",
+      image_key: "",
+      description: "Kualitas kerajaan dengan ukuran jumbo dan rasa yang sangat juicy.",
+      created_at: new Date().toISOString()
+    }
+  ],
   promos: [],
   settings: {
     site_name: 'SUJUD NANAS',
