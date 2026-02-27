@@ -1,35 +1,78 @@
 export const Hero = () => (
-  <section class="relative h-[90vh] flex items-center justify-center overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-black/60 to-[#050505] z-10"></div>
-    <div class="absolute inset-0 z-0">
-      <img
-        src="https://images.unsplash.com/photo-1550258987-190a2d41a8ba?auto=format&fit=crop&q=80&w=1920"
-        class="w-full h-full object-cover grayscale-[20%] animate-zoom-out"
-        alt="Pineapple Background"
-      />
-    </div>
-    <div class="relative z-20 text-center px-4 max-w-5xl animate-fade-in-up">
-      <span class="text-yellow-500/80 uppercase tracking-[0.5em] text-xs mb-4 block font-light">The Gold Standard of Pineapple</span>
-      <h1 class="text-6xl md:text-8xl font-bold mb-8 gold-gradient-text tracking-tighter leading-[0.9]">
-        Kemewahan Rasa <br/> Dari Alam Terbaik
-      </h1>
-      <p class="text-lg md:text-xl text-gray-400 mb-10 tracking-wide max-w-2xl mx-auto font-light leading-relaxed">
-        Nenas pilihan dengan kualitas premium, dibudidayakan dengan penuh kasih sayang untuk Anda yang menghargai cita rasa sejati.
-      </p>
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
-        <a href="#produk" class="group relative inline-block px-12 py-5 font-bold overflow-hidden transition-all duration-300">
-          <span class="absolute inset-0 gold-gradient-bg opacity-100 group-hover:opacity-90 transition-opacity"></span>
-          <span class="relative text-black uppercase tracking-widest text-xs">Lihat Koleksi</span>
-        </a>
-        <a href="#kontak" class="text-white/60 hover:text-white uppercase tracking-widest text-xs transition-colors border-b border-white/20 pb-1">
-          Hubungi Kami
-        </a>
-      </div>
-    </div>
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce opacity-40">
-      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-      </svg>
-    </div>
-  </section>
+    <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden wave-bg">
+        <div class="absolute inset-0 pattern-bg opacity-30"></div>
+
+        {/* Decorative Elements */}
+        <div class="absolute top-20 left-10 w-32 h-32 bg-pineapple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
+        <div class="absolute bottom-20 right-10 w-48 h-48 bg-fresh-green-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style="animation-delay: 2s;"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8 animate-fade-in-up">
+                <div class="inline-block px-4 py-2 bg-pineapple-100 text-pineapple-700 rounded-full text-sm font-semibold tracking-wide">
+                    <i class="fas fa-star mr-2"></i>100% Organik & Segar
+                </div>
+                <h1 class="font-display text-5xl md:text-7xl font-bold leading-tight text-gray-900">
+                    Buah Segar <br />
+                    <span class="text-gradient">Berkualitas Premium</span>
+                </h1>
+                <p class="text-lg text-gray-600 leading-relaxed max-w-lg">
+                    Nikmati kesegaran buah-buahan pilihan terbaik langsung dari kebun ke meja Anda. Kami menyediakan nanas, mangga, semangka, dan buah tropis lainnya dengan kualitas eksport.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#products" class="bg-gradient-to-r from-pineapple-500 to-pineapple-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition flex items-center">
+                        Belanja Sekarang <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                    <a href="#kontak" class="bg-white text-gray-800 border-2 border-gray-200 px-8 py-4 rounded-full font-bold text-lg hover:border-pineapple-500 hover:text-pineapple-600 transition flex items-center">
+                        <i class="fab fa-whatsapp mr-2 text-green-500"></i>Hubungi Kami
+                    </a>
+                </div>
+
+                <div class="flex items-center space-x-8 pt-4">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-gray-900">5000+</div>
+                        <div class="text-sm text-gray-500">Pelanggan Puas</div>
+                    </div>
+                    <div class="w-px h-12 bg-gray-300"></div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-gray-900">100%</div>
+                        <div class="text-sm text-gray-500">Organik</div>
+                    </div>
+                    <div class="w-px h-12 bg-gray-300"></div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-gray-900">24/7</div>
+                        <div class="text-sm text-gray-500">Pengiriman</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative">
+                <div class="relative z-10 animate-float">
+                    <img src="https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=600&h=600&fit=crop" alt="Fresh Pineapple" class="w-full max-w-md mx-auto fruit-shadow rounded-full border-8 border-white shadow-2xl" />
+                </div>
+                {/* Floating Cards */}
+                <div class="absolute top-10 -left-4 bg-white p-4 rounded-2xl shadow-xl animate-bounce-slow">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-500">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500">Kesegaran</div>
+                            <div class="font-bold text-gray-900">100% Terjamin</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute bottom-20 -right-4 bg-white p-4 rounded-2xl shadow-xl animate-bounce-slow" style="animation-delay: 1s;">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-500">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500">Pengiriman</div>
+                            <div class="font-bold text-gray-900">Gratis Ongkir</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 )

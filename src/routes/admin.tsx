@@ -38,32 +38,41 @@ admin.get('/', async (c) => {
       phone={settings.contact_phone}
     >
       <div class="max-w-6xl mx-auto p-6 pt-10">
-        <h1 class="text-3xl font-luxury gold-text mb-8">Admin Dashboard</h1>
+        <h1 class="text-3xl font-display text-gray-900 mb-8 border-b-4 border-pineapple-500 inline-block">Admin Dashboard</h1>
 
         <div class="grid md:grid-cols-2 gap-12">
           {/* Products Management */}
-          <div class="bg-gray-900 p-6 rounded border border-gray-800">
-            <h2 class="text-xl gold-text mb-4 border-b border-gray-800 pb-2">Kelola Produk</h2>
+          <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-box-open mr-2 text-pineapple-600"></i> Kelola Produk
+            </h2>
             <form action="/admin/product" method="POST" enctype="multipart/form-data" class="space-y-4 mb-8">
-              <input type="text" name="name" placeholder="Nama Produk" class="w-full bg-black border border-gray-700 p-2 rounded" required />
+              <input type="text" name="name" placeholder="Nama Produk" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-pineapple-500 outline-none" required />
               <div class="grid grid-cols-2 gap-4">
-                <input type="number" name="price" placeholder="Harga" class="bg-black border border-gray-700 p-2 rounded" required />
-                <input type="text" name="type" placeholder="Jenis (misal: Nenas Madu)" class="bg-black border border-gray-700 p-2 rounded" />
+                <input type="number" name="price" placeholder="Harga" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-pineapple-500 outline-none" required />
+                <input type="text" name="type" placeholder="Jenis (misal: Nenas Madu)" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-pineapple-500 outline-none" />
               </div>
               <div class="grid grid-cols-2 gap-4">
-                <input type="text" name="size" placeholder="Ukuran (misal: Besar / 1kg)" class="bg-black border border-gray-700 p-2 rounded" />
-                <input type="file" name="image" class="bg-black border border-gray-700 p-1 rounded text-xs" />
+                <input type="text" name="size" placeholder="Ukuran (misal: Besar / 1kg)" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-pineapple-500 outline-none" />
+                <div class="relative">
+                    <input type="file" name="image" class="w-full bg-gray-50 border border-gray-200 p-2 rounded-xl text-xs" />
+                </div>
               </div>
-              <textarea name="description" placeholder="Deskripsi" class="w-full bg-black border border-gray-700 p-2 rounded h-20"></textarea>
-              <button type="submit" class="w-full gold-bg text-black font-bold py-2 rounded">Tambah Produk</button>
+              <textarea name="description" placeholder="Deskripsi Singkat" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl h-24 focus:ring-2 focus:ring-pineapple-500 outline-none"></textarea>
+              <button type="submit" class="w-full bg-pineapple-500 hover:bg-pineapple-600 text-white font-bold py-3 rounded-xl shadow-lg transition transform hover:scale-[1.02]">
+                  <i class="fas fa-plus-circle mr-2"></i> Tambah Produk
+              </button>
             </form>
 
-            <div class="space-y-2">
+            <div class="space-y-3">
+              <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">Daftar Produk</h3>
               {data.products.map((p) => (
-                <div class="flex justify-between items-center bg-black p-3 rounded border border-gray-800">
-                  <span>{p.name}</span>
+                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-gray-100 group hover:border-pineapple-200 transition">
+                  <span class="font-medium text-gray-700">{p.name}</span>
                   <form action={`/admin/product/delete/${p.id}`} method="POST">
-                    <button class="text-red-500 text-xs hover:underline">Hapus</button>
+                    <button class="text-gray-400 hover:text-red-500 transition-colors">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                   </form>
                 </div>
               ))}
@@ -72,43 +81,55 @@ admin.get('/', async (c) => {
 
           {/* Promos & Settings */}
           <div class="space-y-8">
-            <div class="bg-gray-900 p-6 rounded border border-gray-800">
-              <h2 class="text-xl gold-text mb-4 border-b border-gray-800 pb-2">Kelola Promo</h2>
+            <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+              <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                  <i class="fas fa-bullhorn mr-2 text-pineapple-600"></i> Kelola Promo
+              </h2>
               <form action="/admin/promo" method="POST" class="space-y-4 mb-6">
-                <input type="text" name="title" placeholder="Judul Promo" class="w-full bg-black border border-gray-700 p-2 rounded" required />
-                <input type="text" name="discount_text" placeholder="Teks Diskon (misal: Hemat 20%)" class="w-full bg-black border border-gray-700 p-2 rounded" />
-                <button type="submit" class="w-full border gold-border gold-text py-2 rounded">Tambah Promo</button>
+                <input type="text" name="title" placeholder="Judul Promo" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-pineapple-500" required />
+                <input type="text" name="discount_text" placeholder="Teks Diskon (misal: Hemat 20%)" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-pineapple-500" />
+                <button type="submit" class="w-full border-2 border-pineapple-500 text-pineapple-600 hover:bg-pineapple-500 hover:text-white font-bold py-3 rounded-xl transition">
+                    Aktifkan Promo Baru
+                </button>
               </form>
                <div class="space-y-2">
                 {data.promos.map((p) => (
-                  <div class="flex justify-between items-center bg-black p-3 rounded border border-gray-800">
-                    <span>{p.title}</span>
+                  <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <span class="text-gray-700">{p.title}</span>
                     <form action={`/admin/promo/delete/${p.id}`} method="POST">
-                      <button class="text-red-500 text-xs hover:underline">Hapus</button>
+                      <button class="text-red-400 hover:text-red-600 transition"><i class="fas fa-times-circle"></i></button>
                     </form>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div class="bg-gray-900 p-6 rounded border border-gray-800">
-              <h2 class="text-xl gold-text mb-4 border-b border-gray-800 pb-2">Pengaturan Situs</h2>
+            <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+              <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                  <i class="fas fa-cog mr-2 text-pineapple-600"></i> Pengaturan Situs
+              </h2>
               <form action="/admin/settings" method="POST" class="space-y-4">
                 {Object.entries(settings).filter(([key]) => key !== 'admin_password').map(([key, value]) => (
                   <div key={key}>
-                    <label class="block text-xs text-gray-500 mb-1">{key}</label>
-                    <input type="text" name={key} defaultValue={value} class="w-full bg-black border border-gray-700 p-2 rounded" />
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1 ml-1">{key.replace('_', ' ')}</label>
+                    <input type="text" name={key} defaultValue={value} class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-pineapple-500" />
                   </div>
                 ))}
-                <button type="submit" class="w-full bg-gray-800 py-2 rounded hover:bg-gray-700 transition">Simpan Pengaturan</button>
+                <button type="submit" class="w-full bg-gray-900 text-white font-bold py-3 rounded-xl hover:bg-black transition shadow-lg">
+                    Simpan Perubahan
+                </button>
               </form>
             </div>
 
-            <div class="bg-gray-900 p-6 rounded border border-gray-800">
-              <h2 class="text-xl gold-text mb-4 border-b border-gray-800 pb-2">Ubah Kata Sandi Admin</h2>
+            <div class="bg-white p-8 rounded-3xl shadow-lg border border-red-50">
+              <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                  <i class="fas fa-lock mr-2 text-red-500"></i> Keamanan
+              </h2>
               <form action="/admin/change-password" method="POST" class="space-y-4">
-                <input type="password" name="new_password" placeholder="Kata Sandi Baru" class="w-full bg-black border border-gray-700 p-2 rounded" required />
-                <button type="submit" class="w-full border border-red-900 text-red-500 py-2 rounded hover:bg-red-950 transition">Perbarui Kata Sandi</button>
+                <input type="password" name="new_password" placeholder="Kata Sandi Admin Baru" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-red-500" required />
+                <button type="submit" class="w-full border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-bold py-3 rounded-xl transition">
+                    Perbarui Kata Sandi
+                </button>
               </form>
             </div>
           </div>
@@ -118,7 +139,7 @@ admin.get('/', async (c) => {
   )
 })
 
-// Handlers
+// Handlers (remain unchanged for logic)
 admin.post('/product', async (c) => {
   const body = await c.req.parseBody()
   const image = body['image'] as File
