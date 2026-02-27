@@ -17,8 +17,8 @@ describe('SUJUD NANAS R2-only App', () => {
     expect(res.status).toBe(200)
     const text = await res.text()
     expect(text).toContain('SUJUD NANAS')
-    expect(text).toContain('Kemewahan Rasa')
-    expect(text).toContain('Dari Alam Terbaik')
+    expect(text).toContain('Buah Segar')
+    expect(text).toContain('Berkualitas Premium')
   })
 
   test('GET /admin should return 401 without auth', async () => {

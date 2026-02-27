@@ -4,6 +4,8 @@ export interface Product {
   price: number
   type?: string
   size?: string
+  stock: number
+  rating: number
   image_key?: string
   description?: string
   created_at: string
@@ -31,6 +33,8 @@ const DEFAULT_DATA: SiteData = {
       price: 50000,
       type: "Madu",
       size: "XL",
+      stock: 50,
+      rating: 5,
       image_key: "",
       description: "Nenas madu dengan kemanisan sempurna dan tekstur renyah. Dipanen langsung dari perkebunan terbaik.",
       created_at: new Date().toISOString()
@@ -41,6 +45,8 @@ const DEFAULT_DATA: SiteData = {
       price: 75000,
       type: "MD2",
       size: "L",
+      stock: 30,
+      rating: 5,
       image_key: "",
       description: "Varietas MD2 yang terkenal dengan warna kuning keemasan dan rasa manis asam yang seimbang.",
       created_at: new Date().toISOString()
@@ -51,6 +57,8 @@ const DEFAULT_DATA: SiteData = {
       price: 35000,
       type: "Pasir",
       size: "M",
+      stock: 100,
+      rating: 4,
       image_key: "",
       description: "Nenas pasir dengan tekstur daging yang padat dan aroma yang sangat harum.",
       created_at: new Date().toISOString()
@@ -61,6 +69,8 @@ const DEFAULT_DATA: SiteData = {
       price: 45000,
       type: "Queen",
       size: "L",
+      stock: 25,
+      rating: 4,
       image_key: "",
       description: "Kualitas kerajaan dengan ukuran jumbo dan rasa yang sangat juicy.",
       created_at: new Date().toISOString()

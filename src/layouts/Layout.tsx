@@ -211,12 +211,39 @@ export const Layout = (props: { title: string; children: any; address?: string; 
                     </div>
 
                     <div class="p-6 border-t border-gray-200 bg-gray-50">
+                        <div class="mb-6">
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Metode Pembayaran</h4>
+                            <div class="grid grid-cols-1 gap-2">
+                                <label class="flex items-center p-3 bg-white border border-gray-200 rounded-xl cursor-pointer hover:border-pineapple-500 transition">
+                                    <input type="radio" name="payment_method" value="COD" class="w-4 h-4 text-pineapple-600" checked>
+                                    <div class="ml-3">
+                                        <span class="block font-bold text-sm text-gray-900">COD (Bayar di Tempat)</span>
+                                        <span class="block text-[10px] text-gray-500">Bayar saat nanas sampai di rumah</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 bg-white border border-gray-200 rounded-xl cursor-pointer hover:border-pineapple-500 transition">
+                                    <input type="radio" name="payment_method" value="Transfer" class="w-4 h-4 text-pineapple-600">
+                                    <div class="ml-3">
+                                        <span class="block font-bold text-sm text-gray-900">Transfer Bank</span>
+                                        <span class="block text-[10px] text-gray-500">Bayar langsung untuk proses lebih cepat</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 bg-white border border-gray-200 rounded-xl cursor-pointer hover:border-pineapple-500 transition">
+                                    <input type="radio" name="payment_method" value="WhatsApp" class="w-4 h-4 text-pineapple-600">
+                                    <div class="ml-3">
+                                        <span class="block font-bold text-sm text-gray-900">Tanya via WhatsApp</span>
+                                        <span class="block text-[10px] text-gray-500">Konsultasi dulu sebelum membeli</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="flex justify-between mb-4 text-lg font-bold">
-                            <span>Total:</span>
+                            <span>Total Pesanan:</span>
                             <span id="cart-total" class="text-pineapple-600">Rp0</span>
                         </div>
                         <button onclick="checkout()" class="w-full bg-gradient-to-r from-pineapple-500 to-pineapple-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition transform hover:scale-[1.02]">
-                            Checkout via WhatsApp
+                            Pesan Sekarang
                         </button>
                     </div>
                 </div>
@@ -233,12 +260,12 @@ export const Layout = (props: { title: string; children: any; address?: string; 
             // Cart functionality
             let cart = [];
 
-            function addToCart(name, price) {
+            function addToCart(name, price, image, desc) {
                 const existingItem = cart.find(item => item.name === name);
                 if (existingItem) {
                     existingItem.quantity += 1;
                 } else {
-                    cart.push({ name, price, quantity: 1 });
+                    cart.push({ name, price, quantity: 1, image, desc });
                 }
                 updateCart();
                 showToast(name + ' ditambahkan ke keranjang!');
@@ -276,7 +303,28 @@ export const Layout = (props: { title: string; children: any; address?: string; 
                     cartItems.innerHTML = '<div class="text-center text-gray-500 mt-20"><i class="fas fa-shopping-basket text-6xl mb-4 text-gray-300"></i><p>Keranjang masih kosong</p></div>';
                     cartTotal.textContent = 'Rp0';
                 } else {
-                    cartItems.innerHTML = cart.map((item, index) => '<div class="flex items-center justify-between mb-4 bg-gray-50 p-4 rounded-xl"><div class="flex-1"><h4 class="font-bold text-gray-900">' + item.name + '</h4><p class="text-pineapple-600 font-semibold">Rp' + item.price.toLocaleString() + '</p></div><div class="flex items-center space-x-3"><button onclick="updateQuantity(' + index + ', -1)" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition"><i class="fas fa-minus text-xs"></i></button><span class="font-bold w-8 text-center">' + item.quantity + '</span><button onclick="updateQuantity(' + index + ', 1)" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition"><i class="fas fa-plus text-xs"></i></button><button onclick="removeFromCart(' + index + ')" class="ml-2 text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button></div></div>').join('');
+                    cartItems.innerHTML = cart.map((item, index) => \`
+                        <div class="mb-4 bg-white border border-gray-100 p-4 rounded-2xl shadow-sm">
+                            <div class="flex space-x-4 mb-3">
+                                <img src="\${item.image}" class="w-16 h-16 rounded-xl object-cover" alt="\${item.name}">
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-gray-900 text-sm leading-tight mb-1">\${item.name}</h4>
+                                    <p class="text-gray-400 text-[10px] line-clamp-1 mb-1">\${item.desc}</p>
+                                    <p class="text-pineapple-600 font-bold text-sm">Rp\${item.price.toLocaleString()}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-3 border-t border-gray-50">
+                                <div class="flex items-center space-x-3 bg-gray-50 rounded-full px-3 py-1">
+                                    <button onclick="updateQuantity(\${index}, -1)" class="text-gray-400 hover:text-pineapple-600 transition"><i class="fas fa-minus text-xs"></i></button>
+                                    <span class="font-bold text-sm w-6 text-center text-gray-700">\${item.quantity}</span>
+                                    <button onclick="updateQuantity(\${index}, 1)" class="text-gray-400 hover:text-pineapple-600 transition"><i class="fas fa-plus text-xs"></i></button>
+                                </div>
+                                <button onclick="removeFromCart(\${index})" class="text-red-400 hover:text-red-600 transition text-sm">
+                                    <i class="fas fa-trash-alt mr-1"></i> Hapus
+                                </button>
+                            </div>
+                        </div>
+                    \`).join('');
 
                     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                     cartTotal.textContent = 'Rp' + total.toLocaleString();
@@ -306,15 +354,22 @@ export const Layout = (props: { title: string; children: any; address?: string; 
                     return;
                 }
 
-                let message = 'Halo SUJUD NANAS! Saya ingin memesan:\\n\\n';
-                let total = 0;
+                const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
 
+                let message = '🍍 *PESANAN BARU - SUJUD NANAS* 🍍\\n\\n';
+                message += 'Metode Pembayaran: *' + paymentMethod + '*\\n';
+                message += '------------------------------------------\\n';
+
+                let total = 0;
                 cart.forEach(item => {
-                    message += '- ' + item.name + ' (' + item.quantity + 'x) = Rp' + (item.price * item.quantity).toLocaleString() + '\\n';
+                    message += '✅ *' + item.name + '*\\n';
+                    message += '   ' + item.quantity + ' x Rp' + item.price.toLocaleString() + ' = *Rp' + (item.price * item.quantity).toLocaleString() + '*\\n';
                     total += item.price * item.quantity;
                 });
 
-                message += '\\nTotal: Rp' + total.toLocaleString() + '\\n\\nTerima kasih!';
+                message += '------------------------------------------\\n';
+                message += '💰 *TOTAL BAYAR: Rp' + total.toLocaleString() + '*\\n\\n';
+                message += 'Mohon segera diproses ya kak. Terima kasih! 🙏';
 
                 const encodedMessage = encodeURIComponent(message);
                 window.open('https://wa.me/' + '${phone.replace(/\+/g, '').replace(/\s/g, '')}' + '?text=' + encodedMessage, '_blank');

@@ -53,6 +53,10 @@ admin.get('/', async (c) => {
                 <input type="text" name="type" placeholder="Jenis (misal: Nenas Madu)" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-pineapple-500 outline-none" />
               </div>
               <div class="grid grid-cols-2 gap-4">
+                <input type="number" name="stock" placeholder="Stok" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-pineapple-500 outline-none" required />
+                <input type="number" name="rating" placeholder="Rating (1-5)" min="1" max="5" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-pineapple-500 outline-none" required />
+              </div>
+              <div class="grid grid-cols-2 gap-4">
                 <input type="text" name="size" placeholder="Ukuran (misal: Besar / 1kg)" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-pineapple-500 outline-none" />
                 <div class="relative">
                     <input type="file" name="image" class="w-full bg-gray-50 border border-gray-200 p-2 rounded-xl text-xs" />
@@ -157,6 +161,8 @@ admin.post('/product', async (c) => {
     price: parseFloat(body['price'] as string),
     type: body['type'] as string,
     size: body['size'] as string,
+    stock: parseInt(body['stock'] as string) || 0,
+    rating: parseInt(body['rating'] as string) || 5,
     description: body['description'] as string,
     image_key: imageKey,
     created_at: new Date().toISOString()
