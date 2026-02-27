@@ -2,7 +2,7 @@ import { Layout } from '../layouts/Layout'
 
 interface CheckoutProps {
   product: {
-    id: number
+    id: string
     name: string
     price: number
     image_key?: string

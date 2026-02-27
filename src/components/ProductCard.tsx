@@ -1,5 +1,5 @@
 export const ProductCard = (props: {
-  id: number,
+  id: string
   name: string,
   price: number,
   type: string,

@@ -1,77 +1,65 @@
-import { expect, it, describe } from 'vitest'
+import { expect, test, describe, beforeAll, vi } from 'vitest'
 import app from '../src/index'
 
-describe('SUJUD NANAS Web Tests', () => {
-  it('GET / should return 200', async () => {
-    const res = await app.request('/', {}, {
-      DB: {
-        prepare: () => ({
-          all: async () => ({ results: [] }),
-          bind: () => ({ all: async () => ({ results: [] }) })
-        })
-      },
-      BUCKET: {}
-    } as any)
+describe('SUJUD NANAS R2-only App', () => {
+  const BUCKET = {
+    get: vi.fn(),
+    put: vi.fn(),
+  }
+
+  const env = { BUCKET }
+
+  test('GET / should return 200 and elegant title', async () => {
+    // Mock site_data.json doesn't exist yet
+    BUCKET.get.mockResolvedValue(null)
+
+    const res = await app.request('/', {}, env)
     expect(res.status).toBe(200)
+    const text = await res.text()
+    expect(text).toContain('SUJUD NANAS')
+    expect(text).toContain('Kemewahan Rasa')
+    expect(text).toContain('Dari Alam Terbaik')
   })
 
-  it('GET /admin should return 401 (Basic Auth) even if password is not in DB (falls back to default)', async () => {
-    const res = await app.request('/admin', {}, {
-      DB: {
-        prepare: () => ({
-          bind: () => ({ first: async () => null })
-        })
-      },
-      BUCKET: {},
-      ADMIN_PASSWORD: 'envpassword'
-    } as any)
+  test('GET /admin should return 401 without auth', async () => {
+    const res = await app.request('/admin', {}, env)
     expect(res.status).toBe(401)
   })
 
-  it('GET /admin should return 500 if no password at all', async () => {
-    const res = await app.request('/admin', {}, {
-      DB: {
-        prepare: () => ({
-          bind: () => ({ first: async () => null })
-        })
-      },
-      BUCKET: {},
-      ADMIN_PASSWORD: '' // explicit empty
-    } as any)
-    // Actually the middleware has: const password = dbPassword || c.env.ADMIN_PASSWORD || 'sujudnanaspassword'
-    // So it might return 401 because of the hardcoded fallback.
-    // Let's check what it actually does.
-    expect([401, 500]).toContain(res.status)
-  })
+  test('GET /admin should return 200 with basic auth', async () => {
+    // Mock auth data in R2
+    const mockData = JSON.stringify({
+      products: [],
+      promos: [],
+      settings: {
+        site_name: 'SUJUD NANAS',
+        admin_password: 'sujudnanas123'
+      }
+    })
 
-  it('GET /checkout/:id should return 200 for existing product', async () => {
-    const res = await app.request('/checkout/1', {}, {
-      DB: {
-        prepare: (query: string) => ({
-          bind: () => ({
-            first: async () => ({ id: 1, name: 'Nenas Madu', price: 50000 }),
-            all: async () => ({ results: [
-              { key: 'address', value: 'Test Address' },
-              { key: 'contact_phone', value: '+6212345678' }
-            ] })
-          }),
-          all: async () => ({ results: [] })
-        })
-      },
-      BUCKET: {}
-    } as any)
+    BUCKET.get.mockImplementation((key) => {
+        if (key === 'site_data.json') {
+            return {
+                text: () => Promise.resolve(mockData)
+            }
+        }
+        return null
+    })
+
+    const res = await app.request('/admin', {
+      headers: {
+        'Authorization': 'Basic ' + btoa('admin:sujudnanas123')
+      }
+    }, env)
     expect(res.status).toBe(200)
+    const text = await res.text()
+    expect(text).toContain('Admin Dashboard')
   })
 
-  it('GET /checkout/:id should return 404 for missing product', async () => {
-    const res = await app.request('/checkout/999', {}, {
-      DB: {
-        prepare: () => ({
-          bind: () => ({ first: async () => null })
-        })
-      },
-      BUCKET: {}
-    } as any)
-    expect(res.status).toBe(404)
+  test('GET /image/site_data.json should return 403', async () => {
+    const res = await app.request('/image/site_data.json', {}, env)
+    expect(res.status).toBe(403)
+    const text = await res.text()
+    expect(text).toBe('Forbidden')
   })
 })

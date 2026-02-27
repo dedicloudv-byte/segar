@@ -2,9 +2,9 @@ import { Hono } from 'hono'
 import { basicAuth } from 'hono/basic-auth'
 import { csrf } from 'hono/csrf'
 import { Layout } from '../layouts/Layout'
+import { getSiteData, saveSiteData, Product, Promo } from '../lib/data'
 
 type Bindings = {
-  DB: D1Database
   BUCKET: R2Bucket
   ADMIN_PASSWORD?: string
 }
@@ -16,11 +16,8 @@ admin.use('*', csrf())
 
 // Basic Auth Middleware
 admin.use('*', async (c, next) => {
-  const dbPassword = await c.env.DB.prepare('SELECT value FROM settings WHERE key = ?')
-    .bind('admin_password')
-    .first('value') as string | null
-
-  const password = dbPassword || c.env.ADMIN_PASSWORD || 'sujudnanaspassword'
+  const data = await getSiteData(c.env.BUCKET)
+  const password = data.settings.admin_password || c.env.ADMIN_PASSWORD || 'sujudnanaspassword'
 
   const auth = basicAuth({
     username: 'admin',
@@ -31,20 +28,14 @@ admin.use('*', async (c, next) => {
 
 // Admin Dashboard
 admin.get('/', async (c) => {
-  const { results: products } = await c.env.DB.prepare('SELECT * FROM products').all()
-  const { results: promos } = await c.env.DB.prepare('SELECT * FROM promos').all()
-  const { results: settings } = await c.env.DB.prepare('SELECT * FROM settings').all()
-
-  const siteSettings = settings.reduce((acc: any, curr: any) => {
-    acc[curr.key] = curr.value
-    return acc
-  }, {})
+  const data = await getSiteData(c.env.BUCKET)
+  const settings = data.settings
 
   return c.html(
     <Layout
       title="Admin Dashboard"
-      address={siteSettings.address}
-      phone={siteSettings.contact_phone}
+      address={settings.address}
+      phone={settings.contact_phone}
     >
       <div class="max-w-6xl mx-auto p-6 pt-10">
         <h1 class="text-3xl font-luxury gold-text mb-8">Admin Dashboard</h1>
@@ -68,7 +59,7 @@ admin.get('/', async (c) => {
             </form>
 
             <div class="space-y-2">
-              {products.map((p: any) => (
+              {data.products.map((p) => (
                 <div class="flex justify-between items-center bg-black p-3 rounded border border-gray-800">
                   <span>{p.name}</span>
                   <form action={`/admin/product/delete/${p.id}`} method="POST">
@@ -89,7 +80,7 @@ admin.get('/', async (c) => {
                 <button type="submit" class="w-full border gold-border gold-text py-2 rounded">Tambah Promo</button>
               </form>
                <div class="space-y-2">
-                {promos.map((p: any) => (
+                {data.promos.map((p) => (
                   <div class="flex justify-between items-center bg-black p-3 rounded border border-gray-800">
                     <span>{p.title}</span>
                     <form action={`/admin/promo/delete/${p.id}`} method="POST">
@@ -103,10 +94,10 @@ admin.get('/', async (c) => {
             <div class="bg-gray-900 p-6 rounded border border-gray-800">
               <h2 class="text-xl gold-text mb-4 border-b border-gray-800 pb-2">Pengaturan Situs</h2>
               <form action="/admin/settings" method="POST" class="space-y-4">
-                {settings.filter((s: any) => s.key !== 'admin_password').map((s: any) => (
-                  <div key={s.key}>
-                    <label class="block text-xs text-gray-500 mb-1">{s.key}</label>
-                    <input type="text" name={s.key} defaultValue={s.value} class="w-full bg-black border border-gray-700 p-2 rounded" />
+                {Object.entries(settings).filter(([key]) => key !== 'admin_password').map(([key, value]) => (
+                  <div key={key}>
+                    <label class="block text-xs text-gray-500 mb-1">{key}</label>
+                    <input type="text" name={key} defaultValue={value} class="w-full bg-black border border-gray-700 p-2 rounded" />
                   </div>
                 ))}
                 <button type="submit" class="w-full bg-gray-800 py-2 rounded hover:bg-gray-700 transition">Simpan Pengaturan</button>
@@ -130,11 +121,6 @@ admin.get('/', async (c) => {
 // Handlers
 admin.post('/product', async (c) => {
   const body = await c.req.parseBody()
-  const name = body['name'] as string
-  const price = parseFloat(body['price'] as string)
-  const type = body['type'] as string
-  const size = body['size'] as string
-  const description = body['description'] as string
   const image = body['image'] as File
 
   let imageKey = ''
@@ -143,53 +129,79 @@ admin.post('/product', async (c) => {
     await c.env.BUCKET.put(imageKey, image)
   }
 
-  await c.env.DB.prepare(
-    'INSERT INTO products (name, price, type, size, description, image_key) VALUES (?, ?, ?, ?, ?, ?)'
-  ).bind(name, price, type, size, description, imageKey).run()
+  const data = await getSiteData(c.env.BUCKET)
+  const newProduct: Product = {
+    id: Math.random().toString(36).substr(2, 9),
+    name: body['name'] as string,
+    price: parseFloat(body['price'] as string),
+    type: body['type'] as string,
+    size: body['size'] as string,
+    description: body['description'] as string,
+    image_key: imageKey,
+    created_at: new Date().toISOString()
+  }
+
+  data.products.push(newProduct)
+  await saveSiteData(c.env.BUCKET, data)
 
   return c.redirect('/admin')
 })
 
 admin.post('/product/delete/:id', async (c) => {
   const id = c.req.param('id')
+  const data = await getSiteData(c.env.BUCKET)
 
-  // Get image key to delete from R2 as well
-  const product = await c.env.DB.prepare('SELECT image_key FROM products WHERE id = ?').bind(id).first() as any
-  if (product?.image_key) {
-    await c.env.BUCKET.delete(product.image_key)
+  const productIndex = data.products.findIndex(p => p.id === id)
+  if (productIndex !== -1) {
+    const product = data.products[productIndex]
+    if (product.image_key) {
+      await c.env.BUCKET.delete(product.image_key)
+    }
+    data.products.splice(productIndex, 1)
+    await saveSiteData(c.env.BUCKET, data)
   }
 
-  await c.env.DB.prepare('DELETE FROM products WHERE id = ?').bind(id).run()
   return c.redirect('/admin')
 })
 
 admin.post('/promo', async (c) => {
   const body = await c.req.parseBody()
-  const title = body['title'] as string
-  const discount_text = body['discount_text'] as string
+  const data = await getSiteData(c.env.BUCKET)
 
-  await c.env.DB.prepare(
-    'INSERT INTO promos (title, discount_text) VALUES (?, ?)'
-  ).bind(title, discount_text).run()
+  const newPromo: Promo = {
+    id: Math.random().toString(36).substr(2, 9),
+    title: body['title'] as string,
+    discount_text: body['discount_text'] as string,
+    is_active: true
+  }
+
+  data.promos.push(newPromo)
+  await saveSiteData(c.env.BUCKET, data)
 
   return c.redirect('/admin')
 })
 
 admin.post('/promo/delete/:id', async (c) => {
   const id = c.req.param('id')
-  await c.env.DB.prepare('DELETE FROM promos WHERE id = ?').bind(id).run()
+  const data = await getSiteData(c.env.BUCKET)
+
+  data.promos = data.promos.filter(p => p.id !== id)
+  await saveSiteData(c.env.BUCKET, data)
+
   return c.redirect('/admin')
 })
 
 admin.post('/settings', async (c) => {
   const body = await c.req.parseBody()
+  const data = await getSiteData(c.env.BUCKET)
 
   for (const key in body) {
     if (key !== 'admin_password') {
-      await c.env.DB.prepare('UPDATE settings SET value = ? WHERE key = ?').bind(body[key], key).run()
+      data.settings[key] = body[key] as string
     }
   }
 
+  await saveSiteData(c.env.BUCKET, data)
   return c.redirect('/admin')
 })
 
@@ -198,9 +210,9 @@ admin.post('/change-password', async (c) => {
   const newPassword = body['new_password'] as string
 
   if (newPassword) {
-    await c.env.DB.prepare('UPDATE settings SET value = ? WHERE key = ?')
-      .bind(newPassword, 'admin_password')
-      .run()
+    const data = await getSiteData(c.env.BUCKET)
+    data.settings.admin_password = newPassword
+    await saveSiteData(c.env.BUCKET, data)
   }
 
   return c.redirect('/admin')
