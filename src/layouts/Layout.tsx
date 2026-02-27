@@ -16,16 +16,30 @@ export const Layout = (props: { title: string; children: any; address?: string; 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
         <style>
+          html {
+            scroll-behavior: smooth;
+          }
           body {
             font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
+            background-color: #050505;
             color: #f5f5f5;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-attachment: fixed;
+            opacity: 0.98;
           }
           h1, h2, h3, .font-luxury {
             font-family: 'Playfair Display', serif;
           }
           .gold-text {
             color: #D4AF37;
+          }
+          .gold-gradient-text {
+            background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+          .gold-gradient-bg {
+            background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
           }
           .gold-border {
             border-color: #D4AF37;
@@ -34,21 +48,37 @@ export const Layout = (props: { title: string; children: any; address?: string; 
             background-color: #D4AF37;
           }
           .card-lux {
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            transition: all 0.3s ease;
+            background-color: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
           }
           .card-lux:hover {
             border-color: #D4AF37;
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+          }
+          @keyframes zoomOut {
+            from { transform: scale(1.1); }
+            to { transform: scale(1); }
+          }
+          .animate-zoom-out {
+            animation: zoomOut 20s ease-out forwards;
+          }
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fade-in-up {
+            animation: fadeInUp 1s ease-out forwards;
           }
         </style>
       </head>
-      <body>
-        <nav class="p-6 border-b border-gray-800 flex justify-between items-center bg-black sticky top-0 z-50">
-          <a href="/" class="text-2xl font-bold gold-text font-luxury tracking-widest">SUJUD NANAS</a>
-          <div class="space-x-8 hidden md:flex">
-            <a href="/" class="hover:text-yellow-500 transition">Beranda</a>
+      <body class="selection:bg-yellow-500/30">
+        <nav class="p-6 border-b border-white/5 flex justify-between items-center bg-black/80 backdrop-blur-md sticky top-0 z-50">
+          <a href="/" class="text-2xl font-bold gold-gradient-text font-luxury tracking-[0.2em]">SUJUD NANAS</a>
+          <div class="space-x-8 hidden md:flex text-sm uppercase tracking-widest font-light">
+            <a href="/" class="hover:gold-text transition-colors duration-300">Beranda</a>
             <a href="#produk" class="hover:text-yellow-500 transition">Koleksi</a>
             <a href="#promo" class="hover:text-yellow-500 transition">Penawaran</a>
             <a href="#kontak" class="hover:text-yellow-500 transition">Kontak</a>

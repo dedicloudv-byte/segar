@@ -72,21 +72,32 @@ app.get('/', async (c) => {
       <Hero />
 
       {activePromos.length > 0 && (
-        <section id="promo" class="bg-gray-950 py-12 border-y border-gray-900">
-          <div class="max-w-6xl mx-auto px-6">
-            <div class="flex items-center space-x-4 mb-8">
-              <div class="h-px bg-yellow-600 flex-1"></div>
-              <h2 class="text-2xl font-luxury gold-text uppercase tracking-widest text-center">Special Promos</h2>
-              <div class="h-px bg-yellow-600 flex-1"></div>
+        <section id="promo" class="py-24 border-y border-white/5 bg-[#050505] relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-yellow-500/20 to-transparent"></div>
+          <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16">
+              <span class="text-[10px] uppercase tracking-[0.4em] gold-text mb-2 block">Limited Time</span>
+              <h2 class="text-3xl font-luxury gold-gradient-text tracking-widest">PENAWARAN EKSKLUSIF</h2>
             </div>
-            <div class="grid md:grid-cols-2 gap-8">
+            <div class="grid md:grid-cols-2 gap-10">
               {activePromos.map((promo) => (
-                <div class="border border-yellow-600/30 p-8 rounded-lg relative overflow-hidden bg-black group">
-                  <div class="absolute top-0 right-0 gold-bg text-black px-4 py-1 text-sm font-bold">
-                    {promo.discount_text}
+                <div class="group relative p-[1px] rounded-sm overflow-hidden transition-all duration-500 hover:scale-[1.02]">
+                  <div class="absolute inset-0 gold-gradient-bg opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                  <div class="relative bg-black p-10 h-full">
+                    <div class="absolute top-6 right-6">
+                       <div class="gold-gradient-bg p-[1px]">
+                         <div class="bg-black px-4 py-1 text-[10px] font-bold gold-gradient-text uppercase tracking-widest">
+                           {promo.discount_text}
+                         </div>
+                       </div>
+                    </div>
+                    <h3 class="text-2xl font-luxury mb-4 tracking-wide group-hover:gold-text transition-colors">{promo.title}</h3>
+                    <p class="text-gray-500 font-light leading-relaxed">{promo.description}</p>
+                    <div class="mt-8 flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-400 group-hover:text-white transition-colors">
+                      <span>Claim Offer</span>
+                      <svg class="w-3 h-3 translate-y-[-1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
                   </div>
-                  <h3 class="text-2xl font-luxury mb-2">{promo.title}</h3>
-                  <p class="text-gray-400">{promo.description}</p>
                 </div>
               ))}
             </div>
